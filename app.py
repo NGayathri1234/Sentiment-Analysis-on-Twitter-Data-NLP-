@@ -105,6 +105,8 @@ except Exception as e:
 def clean_text(text):
     text = str(text).lower()
     text = re.sub(r'http\S+|@\S+|#\S+', '', text)
+    text = re.sub(r'[^a-zA-Z]', ' ', text)   # remove numbers & symbols
+    text = re.sub(r'\s+', ' ', text)         # remove extra spaces
     return text.strip()
 
 # ---------------------------------------------------------
@@ -199,12 +201,12 @@ app.layout = html.Div([
      Output("metrics-table-output", "children"),
      Output("cm-lr", "figure"),
      Output("live-tweet-feed", "children")],
-    [Input("submit-val", "n_clicks")],
-    [State("user-input", "value")]
+    [Input("submit-val", "n_clicks"),
+    Input("user-input", "value")]
 )
 def update_dashboard(n, text_input):
     # 1. Initial State: No clicks yet
-    if n is None or n == 0:
+    if not n:
         stream = [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(3)]
         return html.Div("Enter a tweet and click Analyze"), dist_fig, trend_fig, perf_table_content, cm_fig, stream
 
@@ -219,6 +221,11 @@ def update_dashboard(n, text_input):
     vec = tfidf.transform([cleaned])
     prediction = lr_model.predict(vec)[0]
     nb_prediction = nb_model.predict(vec)[0]
+
+    print("Cleaned:", cleaned)
+    print("Vector shape:", vec.shape)
+    print("LR:", prediction)
+    print("NB:", nb_prediction)
                  
     result_box = html.Div([
         html.Div([
