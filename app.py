@@ -256,7 +256,7 @@ def update_dashboard(n, text_input):
             html.Tr([html.Td("Accuracy"), html.Td(f"{live_acc:.3f}")]),
             html.Tr([html.Td("Precision"), html.Td(f"{live_prec:.3f}")]),
             html.Tr([html.Td("Recall"), html.Td(f"{live_rec:.3f}")]),
-            html.Tr([html.Td("F1-Score"), html.Td(f"{live_f1:.3f}")]),
+            html.Tr([html.Td("F1-Score"), html.Td(f"{live_f1_score:.3f}")]),
             # This row highlights the most recent action
             html.Tr([
                 html.Td("Current Input Label", style={'fontWeight': 'bold'}), 
@@ -273,15 +273,16 @@ def update_dashboard(n, text_input):
 
     # 7. FINAL RESULTS UI
     result_box = html.Div([
-        html.H4(f"Analysis Complete", style={'color': '#27ae60'}),
-        html.Span(f"✅ Final Prediction: {prediction.upper()}", style={'color': '#155724', 'fontWeight': 'bold'}),
+        html.H4("Analysis Complete", style={'color': '#27ae60'}),
+        html.Span(f"✅ Final Prediction: {prediction.upper()}", 
+                  style={'color': '#155724', 'fontWeight': 'bold', 'display': 'block'}),
         html.Small("Dashboard updated with new data point.")
     ], className="card", style={'borderLeft': '5px solid #27ae60'})
 
     stream = [html.Div([html.P(f"🐦 {text_input[:50]}...")], className="status-item")] + \
              [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(2)]
 
-    return result_box, updated_dist_fig, updated_trend_fig, updated_perf_table, updated_cm_fig, stream
+   return result_box, updated_dist_fig, updated_trend_fig, updated_perf_table, updated_cm_fig, stream
     
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=10000, debug=False)
