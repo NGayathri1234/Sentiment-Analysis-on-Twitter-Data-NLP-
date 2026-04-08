@@ -267,4 +267,4 @@ def update_dashboard(n, text_input):
     return result_box, dist_chart, trend_chart, perf_table, cm_fig, stream
 
 if __name__ == '__main__':
-app.run_server(host='0.0.0.0', port=10000, debug=False)
+    app.run_server(host='0.0.0.0', port=10000, debug=False)
