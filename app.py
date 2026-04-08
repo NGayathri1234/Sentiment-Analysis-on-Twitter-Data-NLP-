@@ -46,22 +46,76 @@ def clean_text(text):
 # ---------------------------------------------------------
 # 3. DASH LAYOUT (Connecting Python to HTML IDs)
 # ---------------------------------------------------------
+# --- Professional Layout ---
 app.layout = html.Div([
-    # Hidden components to handle data injection into index.html
-    html.Div(id="live-tweet-feed"),
-    
+    # --- Updated app.py Layout matching your HTML ---
+app.layout = html.Div([
+    # 1. SIDEBAR SECTION
     html.Div([
-        dcc.Textarea(id="user-input", placeholder="Enter tweet...", rows=3),
-        html.Button("Analyze Sentiment", id="submit-val", n_clicks=0)
-    ], id="input-area"),
+        html.Div([
+            html.H2("🚀 BrandPulse AI"),
+            html.P("NLP Sentiment Engine v2.0")
+        ], className="logo-area"),
 
-    html.Div(id="prediction-result"),
-    html.Div(id="dist-plot"),
-    html.Div(id="trend-plot"),
-    html.Div(id="metrics-table-output"),
-    html.Div(id="cm-lr"),
-    html.Div(id="cm-nb")
-])
+        html.Div([
+            html.P("MODEL STATUS", className="label"),
+            html.Div([html.Span("✅"), " Logistic Regression"], className="status-item"),
+            html.Div([html.Span("✅"), " Naive Bayes"], className="status-item"),
+            html.Div([html.Span("✅"), " LSTM (Deep Learning)"], className="status-item"),
+            html.Div([html.Span("✅"), " TF-IDF Vectorizer"], className="status-item"),
+        ], className="menu-section"),
+
+        html.Div([
+            html.P("LIVE STREAM SIMULATION", className="label"),
+            html.Div(id="live-tweet-feed")
+        ], className="menu-section")
+    ], className="sidebar"),
+
+    # 2. MAIN CONTENT SECTION
+    html.Div([
+        html.Header([
+            html.H1("Sentiment Analysis Dashboard"),
+            html.P("Analyzing Twitter data using Classical ML and Deep Learning architectures.")
+        ]),
+
+        # Input Card
+        html.Div([
+            html.H3("💬 Custom Tweet Prediction"),
+            html.Div([
+                dcc.Textarea(id="user-input", placeholder="Enter tweet...", rows=3, style={'width': '100%'}),
+                html.Button("Analyze Sentiment", id="submit-val", n_clicks=0)
+            ], id="input-area"),
+            html.Div(id="prediction-result")
+        ], className="card"),
+
+        # Dashboard Grid (Plots)
+        html.Div([
+            html.Div([
+                html.H3("📊 Sentiment Distribution"),
+                html.Div(id="dist-plot")
+            ], className="card"),
+            html.Div([
+                html.H3("📈 Sentiment Trend (24h)"),
+                html.Div(id="trend-plot")
+            ], className="card")
+        ], className="dashboard-grid"),
+
+        # Metrics Card
+        html.Div([
+            html.H3("📑 Performance Metrics"),
+            html.Div(id="metrics-table-output")
+        ], className="card"),
+
+        # Confusion Matrices Card
+        html.Div([
+            html.H3("🧾 Confusion Matrices"),
+            html.Div([
+                html.Div(id="cm-lr"),
+                html.Div(id="cm-nb")
+            ], className="cm-grid")
+        ], className="card")
+    ], className="main-content")
+], id="main-container") 
 
 # ---------------------------------------------------------
 # 4. CALLBACKS (The Bridge)
