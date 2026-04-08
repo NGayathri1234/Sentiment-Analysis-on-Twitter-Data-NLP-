@@ -48,8 +48,6 @@ def clean_text(text):
 # ---------------------------------------------------------
 # --- Professional Layout ---
 app.layout = html.Div([
-    # --- Updated app.py Layout matching your HTML ---
-app.layout = html.Div([
     # 1. SIDEBAR SECTION
     html.Div([
         html.Div([
