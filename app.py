@@ -6,12 +6,13 @@ import pandas as pd
 import numpy as np
 import joblib
 import re
-import tensorflow as tf
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import load_model
+# import tensorflow as tf
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
+# from tensorflow.keras.models import load_model
 
 # Initialize Dash
 app = dash.Dash(__name__)
+server = app.server
 
 # ---------------------------------------------------------
 # 1. LOAD ALL MODELS & DATA
@@ -23,9 +24,9 @@ try:
     tfidf = joblib.load('tfidf_vectorizer.pkl')
     
     # Deep Learning Models
-    lstm_model = load_model('lstm_model.keras')
-    tokenizer = joblib.load('tokenizer.pkl')
-    le = joblib.load('label_encoder.pkl')
+    # lstm_model = load_model('lstm_model.keras')
+    # tokenizer = joblib.load('tokenizer.pkl')
+    # le = joblib.load('label_encoder.pkl')
     
     # Pre-computed Results
     y_pred_lr = joblib.load('y_pred_lr.pkl')
@@ -80,15 +81,12 @@ def update_dashboard(n, text_input):
     # --- Prediction Logic ---
     result_box = ""
     if n > 0 and text_input:
-        # LSTM Prediction
-        seq = tokenizer.texts_to_sequences([clean_text(text_input)])
-        pad = pad_sequences(seq, maxlen=100)
-        idx = np.argmax(lstm_model.predict(pad))
-        label = le.inverse_transform([idx])[0]
+        # Get the prediction once and store it
+        prediction = lr_model.predict(tfidf.transform([text_input]))[0]
         
         result_box = html.Div([
-            html.H4(f"LSTM Result: {label}", style={'color': '#ff4b4b'}),
-            html.P(f"LR Prediction: {lr_model.predict(tfidf.transform([text_input]))[0]}")
+            html.H4(f"Analysis Result: {prediction}", style={'color': '#ff4b4b'}),
+            html.P(f"Model: Logistic Regression (Cloud Optimized)")
         ], style={'padding': '15px', 'background': '#fff4f4', 'borderRadius': '8px'})
 
     # --- Charts ---
