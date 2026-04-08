@@ -1,3 +1,16 @@
+import os
+import nltk
+
+# 1. SETUP NLTK PATH FIRST (CRITICAL FOR RENDER)
+nltk_data_path = os.path.join(os.getcwd(), 'nltk_data')
+if not os.path.exists(nltk_data_path):
+    os.makedirs(nltk_data_path)
+nltk.data.path.append(nltk_data_path)
+
+# 2. DOWNLOAD NECESSARY DATA
+nltk.download('wordnet', download_dir=nltk_data_path)
+nltk.download('stopwords', download_dir=nltk_data_path)
+nltk.download('omw-1.4', download_dir=nltk_data_path)
 import dash
 from dash import html, dcc, Output, Input, State
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -7,7 +20,6 @@ import pandas as pd
 import numpy as np
 import joblib
 import re
-import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
