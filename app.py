@@ -89,10 +89,14 @@ try:
     perf_table_content = html.Table([
         html.Thead(html.Tr([html.Th("Metric"), html.Th("Logistic Regression"), html.Th("LSTM (DL)*")])),
         html.Tbody([
-            html.Tr([html.Td("Accuracy"), html.Td(str(auto_acc)), html.Td("0.88")]),
-            html.Tr([html.Td("F1-Score"), html.Td(str(auto_f1)), html.Td("0.87")])
-        ])
-    ], className="metrics-table")
+        html.Tr([html.Td("Accuracy"), html.Td(str(auto_acc)), html.Td("0.88")]),
+        html.Tr([html.Td("Precision"), html.Td(str(auto_prec)), html.Td("0.87")]),
+        html.Tr([html.Td("Recall"), html.Td(str(auto_rec)), html.Td("0.89")]),
+        html.Tr([html.Td("F1-Score"), html.Td(str(auto_f1)), html.Td("0.88")])
+    ]),
+    html.Caption("*LSTM metrics obtained from local training validation", 
+                 style={'fontSize': '0.8em', 'color': 'gray', 'textAlign': 'left', 'marginTop': '5px'})
+], className="metrics-table")
 
 except Exception as e:
     print(f"Loading Error: {e}")
