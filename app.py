@@ -282,7 +282,7 @@ def update_dashboard(n, text_input):
     stream = [html.Div([html.P(f"🐦 {text_input[:50]}...")], className="status-item")] + \
              [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(2)]
 
-   return result_box, updated_dist_fig, updated_trend_fig, updated_perf_table, updated_cm_fig, stream
+    return result_box, updated_dist_fig, updated_trend_fig, updated_perf_table, updated_cm_fig, stream
     
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=10000, debug=False)
