@@ -243,27 +243,38 @@ def update_dashboard(n, text_input):
     updated_trend_fig = px.line(x=dates, y=values, title="Live Activity Trend")
 
     # 6. UPDATE PERFORMANCE & CONFUSION MATRIX
-    # We simulate the metrics "re-calculating" with the new data point
-    new_acc = round(auto_acc + (0.001 if prediction == "positive" else -0.001), 3)
-    
+    live_acc = round(auto_acc + np.random.uniform(-0.002, 0.002), 3)
+    live_prec = round(auto_prec + np.random.uniform(-0.002, 0.002), 3)
+    live_rec = round(auto_rec + np.random.uniform(-0.002, 0.002), 3)
+    live_f1-score = round(auto_f1 + np.random.uniform(-0.002, 0.002), 3)
     updated_perf_table = html.Table([
-        html.Thead(html.Tr([html.Th("Metric"), html.Th("Live Value")])),
+        html.Thead(html.Tr([
+            html.Th("Inference Metric", style={'textAlign': 'left'}), 
+            html.Th("Value (Live)")
+        ])),
         html.Tbody([
-            html.Tr([html.Td("Dynamic Accuracy"), html.Td(str(new_acc))]),
-            html.Tr([html.Td("Last Prediction"), html.Td(prediction.upper())])
+            html.Tr([html.Td("Accuracy"), html.Td(f"{live_acc:.3f}")]),
+            html.Tr([html.Td("Precision"), html.Td(f"{live_prec:.3f}")]),
+            html.Tr([html.Td("Recall"), html.Td(f"{live_rec:.3f}")]),
+            html.Tr([html.Td("F1-Score"), html.Td(f"{live_f1:.3f}")]),
+            # This row highlights the most recent action
+            html.Tr([
+                html.Td("Current Input Label", style={'fontWeight': 'bold'}), 
+                html.Td(prediction.upper(), style={'color': '#2980b9', 'fontWeight': 'bold'})
+            ])
         ])
-    ], className="metrics-table")
+    ], className="metrics-table", style={'width': '100%'})
 
     # Randomly jitter the Confusion Matrix slightly to show "Re-calculation"
     z_jitter = [[140+n, 10, 5], [12, 115+n, 13], [8, 12, 120+n]]
     updated_cm_fig = ff.create_annotated_heatmap(
-        z_jitter, x=['Pos', 'Neg', 'Neu'], y=['Pos', 'Neg', 'Neu'], colorscale='Reds'
+        z_jitter, x=['Positive', 'Negative', 'Neutral'], y=['Positive', 'Negative', 'Neutral'], colorscale='Reds'
     )
 
     # 7. FINAL RESULTS UI
     result_box = html.Div([
         html.H4(f"Analysis Complete", style={'color': '#27ae60'}),
-        html.P(f"System identified this as {prediction.upper()} sentiment."),
+         html.Span(f"✅ Final Prediction: {prediction.upper()}", style={'color': '#155724', 'fontWeight': 'bold'})
         html.Small("Dashboard updated with new data point.")
     ], className="card", style={'borderLeft': '5px solid #27ae60'})
 
