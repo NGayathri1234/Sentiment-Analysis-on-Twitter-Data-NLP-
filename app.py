@@ -203,8 +203,11 @@ app.layout = html.Div([
     [State("user-input", "value")]
 )
 def update_dashboard(n, text_input):
-    # --- Prediction Logic ---
-    result_box = html.Div("Waiting for input...", style={'color': 'gray'})
+    if n_clicks is None or n_clicks == 0:
+        return html.Div("Enter a tweet and click Analyze"), dist_fig, trend_fig, perf_table_content, cm_fig, [html.Div("Waiting for stream...", className="status-item")]
+
+    # This part now runs EVERY time the button is clicked
+    result_box = html.Div("Please enter some text to analyze.", style={'color': 'red'})
     perf_table = perf_table_content
     
     if n > 0 and text_input:
