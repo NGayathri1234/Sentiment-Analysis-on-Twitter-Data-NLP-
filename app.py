@@ -187,7 +187,7 @@ app.layout = html.Div([
         ], className="card")
     ], className="main-content")
 ])
-# ---------------------------------------------------------
+
 # ---------------------------------------------------------
 # 4. CALLBACKS (The Bridge)
 # ---------------------------------------------------------
@@ -205,11 +205,9 @@ app.layout = html.Div([
 def update_dashboard(n, text_input):
     # --- Prediction Logic ---
     result_box = html.Div("Waiting for input...", style={'color': 'gray'})
-
     perf_table = perf_table_content
     
     if n > 0 and text_input:
-        # ACTUAL PREDICTION LOGIC 
         cleaned = clean_text(text_input)
         vec = tfidf.transform([cleaned])
         prediction = lr_model.predict(vec)[0]
@@ -228,12 +226,10 @@ def update_dashboard(n, text_input):
             html.P(f"Naive Bayes Analysis: {nb_prediction}", style={'marginTop': '15px', 'fontWeight': '500'}),
             html.P(f"Logistic Regression Analysis: {prediction}", style={'color': '#555'})
         ])
-    # --- Charts ---
-    dist_fig = px.pie(df, names='sentiment', hole=0.4)
-    dist_chart = dist_fig
 
-    trend_fig = px.line(x=pd.date_range(start="2026-04-07", periods=10), y=np.random.randint(10, 100, 10))
-    trend_chart = trend_fig
+    # --- Charts ---
+    dist_chart = px.pie(df, names='sentiment', hole=0.4)
+    trend_chart = px.line(x=pd.date_range(start="2026-04-07", periods=10), y=np.random.randint(10, 100, 10))
 
     # --- Performance Table ---
     perf_table = html.Table([
@@ -244,26 +240,26 @@ def update_dashboard(n, text_input):
         ])
     ])
 
-   # --- Confusion Matrix (LR) ---
-   z_matrix = [
-       [140, 10, 5],   # Actual Positive
-       [12, 115, 13],  # Actual Negative
-       [8, 12, 120]    # Actual Neutral
-   ]
+    # --- Confusion Matrix (LR) ---
+   
+    z_vals = [
+        [140, 10, 5],   # Actual Positive
+        [12, 115, 13],  # Actual Negative
+        [8, 12, 120]    # Actual Neutral
+    ]
 
-   # Rename the labels to include Neutral
-   cm_fig = ff.create_annotated_heatmap(
-       z_matrix, 
-       x=['Positive', 'Negative', 'Neutral'], 
-       y=['Positive', 'Negative', 'Neutral'], 
-       colorscale='Reds'
-   )
+    cm_fig = ff.create_annotated_heatmap(
+        z_vals, 
+        x=['Positive', 'Negative', 'Neutral'], 
+        y=['Positive', 'Negative', 'Neutral'], 
+        colorscale='Reds'
+    )
 
-   cm_fig.update_layout(
-       title_text='Confusion Matrix: Sentiment Prediction',
-       xaxis_title='Predicted Labels',
-       yaxis_title='Actual Labels'
-   )
+    cm_fig.update_layout(
+        title_text='Confusion Matrix: Sentiment Prediction',
+        xaxis_title='Predicted Labels',
+        yaxis_title='Actual Labels'
+    )
 
     # --- Live Stream Simulation ---
     stream = [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(3)]
