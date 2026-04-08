@@ -246,7 +246,7 @@ def update_dashboard(n, text_input):
     live_acc = round(auto_acc + np.random.uniform(-0.002, 0.002), 3)
     live_prec = round(auto_prec + np.random.uniform(-0.002, 0.002), 3)
     live_rec = round(auto_rec + np.random.uniform(-0.002, 0.002), 3)
-    live_f1-score = round(auto_f1 + np.random.uniform(-0.002, 0.002), 3)
+    live_f1_score = round(auto_f1 + np.random.uniform(-0.002, 0.002), 3)
     updated_perf_table = html.Table([
         html.Thead(html.Tr([
             html.Th("Inference Metric", style={'textAlign': 'left'}), 
