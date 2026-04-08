@@ -274,7 +274,7 @@ def update_dashboard(n, text_input):
     # 7. FINAL RESULTS UI
     result_box = html.Div([
         html.H4(f"Analysis Complete", style={'color': '#27ae60'}),
-         html.Span(f"✅ Final Prediction: {prediction.upper()}", style={'color': '#155724', 'fontWeight': 'bold'})
+        html.Span(f"✅ Final Prediction: {prediction.upper()}", style={'color': '#155724', 'fontWeight': 'bold'}),
         html.Small("Dashboard updated with new data point.")
     ], className="card", style={'borderLeft': '5px solid #27ae60'})
 
