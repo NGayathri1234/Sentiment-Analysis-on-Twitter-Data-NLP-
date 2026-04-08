@@ -203,71 +203,62 @@ app.layout = html.Div([
     [State("user-input", "value")]
 )
 def update_dashboard(n, text_input):
-    if n_clicks is None or n_clicks == 0:
-        return html.Div("Enter a tweet and click Analyze"), dist_fig, trend_fig, perf_table_content, cm_fig, [html.Div("Waiting for stream...", className="status-item")]
+    # 1. Initial State: No clicks yet
+    if n is None or n == 0:
+        stream = [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(3)]
+        return html.Div("Enter a tweet and click Analyze"), dist_fig, trend_fig, perf_table_content, cm_fig, stream
 
-    # This part now runs EVERY time the button is clicked
-    result_box = html.Div("Please enter some text to analyze.", style={'color': 'red'})
-    perf_table = perf_table_content
+    # 2. Check if text is actually entered
+    if not text_input or text_input.strip() == "":
+        stream = [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(3)]
+        # This only returns if the box is EMPTY
+        return html.Div("⚠️ Please enter a tweet", style={'color': 'red'}), dist_fig, trend_fig, perf_table_content, cm_fig, stream
     
-    if n > 0 and text_input:
-        cleaned = clean_text(text_input)
-        vec = tfidf.transform([cleaned])
-        prediction = lr_model.predict(vec)[0]
-        nb_prediction = nb_model.predict(vec)[0]
-                     
-        result_box = html.Div([
-            html.Div([
-                html.Span(f"✅ Final Prediction: {prediction.upper()}", style={'color': '#155724', 'fontWeight': 'bold'})
-            ], style={
-                'backgroundColor': '#d4edda', 
-                'padding': '15px', 
-                'borderRadius': '5px', 
-                'border': '1px solid #c3e6cb',
-                'textAlign': 'center'
-            }),
-            html.P(f"Naive Bayes Analysis: {nb_prediction}", style={'marginTop': '15px', 'fontWeight': '500'}),
-            html.P(f"Logistic Regression Analysis: {prediction}", style={'color': '#555'})
-        ])
-
-    # --- Charts ---
-    dist_chart = px.pie(df, names='sentiment', hole=0.4)
-    trend_chart = px.line(x=pd.date_range(start="2026-04-07", periods=10), y=np.random.randint(10, 100, 10))
-
-    # --- Performance Table ---
-    perf_table = html.Table([
-        html.Thead(html.Tr([html.Th("Model"), html.Th("Accuracy"), html.Th("F1")])),
-        html.Tbody([
-            html.Tr([html.Td("Logistic Regression"), html.Td("0.84"), html.Td("0.84")]),
-            html.Tr([html.Td("LSTM"), html.Td("0.80"), html.Td("0.80")])
-        ])
+    # 3. Prediction Logic (This will now run because we didn't return early if text exists)
+    cleaned = clean_text(text_input)
+    vec = tfidf.transform([cleaned])
+    prediction = lr_model.predict(vec)[0]
+    nb_prediction = nb_model.predict(vec)[0]
+                 
+    result_box = html.Div([
+        html.Div([
+            html.Span(f"✅ Final Prediction: {prediction.upper()}", style={'color': '#155724', 'fontWeight': 'bold'})
+        ], style={
+            'backgroundColor': '#d4edda', 
+            'padding': '15px', 
+            'borderRadius': '5px', 
+            'border': '1px solid #c3e6cb',
+            'textAlign': 'center'
+        }),
+        html.P(f"Naive Bayes: {nb_prediction}", style={'marginTop': '15px', 'fontWeight': '500'}),
+        html.P(f"Logistic Regression: {prediction}", style={'color': '#555'})
     ])
 
-    # --- Confusion Matrix (LR) ---
-   
-    z_vals = [
-        [140, 10, 5],   # Actual Positive
-        [12, 115, 13],  # Actual Negative
-        [8, 12, 120]    # Actual Neutral
-    ]
+    # 4. Update Visuals
+    dist_chart = px.pie(df, names='sentiment', hole=0.4)
+    trend_chart = px.line(x=pd.date_range(start="2026-04-07", periods=10), y=np.random.randint(10, 100, 10))
+    
+    # Static Table (Matches your design)
+    perf_table = html.Table([
+        html.Thead(html.Tr([html.Th("Model"), html.Th("Accuracy")])),
+        html.Tbody([
+            html.Tr([html.Td("Logistic Regression"), html.Td("0.84")]),
+            html.Tr([html.Td("Naive Bayes"), html.Td("0.78")])
+        ])
+    ], className="metrics-table")
 
-    cm_fig = ff.create_annotated_heatmap(
+    z_vals = [[140, 10, 5], [12, 115, 13], [8, 12, 120]]
+    cm_fig_update = ff.create_annotated_heatmap(
         z_vals, 
         x=['Positive', 'Negative', 'Neutral'], 
         y=['Positive', 'Negative', 'Neutral'], 
         colorscale='Reds'
     )
 
-    cm_fig.update_layout(
-        title_text='Confusion Matrix: Sentiment Prediction',
-        xaxis_title='Predicted Labels',
-        yaxis_title='Actual Labels'
-    )
-
-    # --- Live Stream Simulation ---
     stream = [html.Div([html.P(f"🐦 {df['text'].iloc[i][:50]}...")], className="status-item") for i in range(3)]
 
-    return result_box, dist_chart, trend_chart, perf_table, cm_fig, stream
-
+    # Final return of all 6 components
+    return result_box, dist_chart, trend_chart, perf_table, cm_fig_update, stream
+    
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=10000, debug=False)
