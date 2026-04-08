@@ -9,9 +9,10 @@ body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     background-color: #f0f2f6;
-    display: flex;
 }
-
+html, body {
+    overflow-x: hidden;
+}
 /* Sidebar */
 .sidebar {
     width: 300px;
@@ -40,7 +41,8 @@ body {
 .main-content {
     margin-left: 300px;
     padding: 50px;
-    width: 100%;
+    width: calc(100% - 300px);
+    overflow-x: hidden;
 }
 
 .card {
